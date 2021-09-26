@@ -9,7 +9,7 @@ export default {
     name:'login',
     data() {
         return {
-            msg1:'this is a login page'
+            msg:'this is a login page'
         }
     }
 }
