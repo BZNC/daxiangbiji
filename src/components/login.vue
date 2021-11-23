@@ -56,6 +56,15 @@
 </template>
 
 <script>
+// import request from "@/helpers/request.js";
+// request("/auth").then((data) => console.log(data));
+
+import Auth from "@/apis/auth";
+
+Auth.getInfo().then((data) => {
+  console.log(data);
+});
+
 export default {
   data() {
     return {
@@ -77,6 +86,7 @@ export default {
   },
 
   methods: {
+    //切换登录与创建账户窗口Start
     showLogin() {
       this.isShowLogin = true;
       this.isShowRegister = false;
@@ -86,7 +96,9 @@ export default {
       this.isShowLogin = false;
       this.isShowRegister = true;
     },
+    //切换登录与创建账户窗口End
 
+    //注册Start
     onRegister() {
       if (!/^[\w\u4e00-\u9fa5]{3,15}$/.test(this.register.username)) {
         this.register.isError = true;
@@ -98,13 +110,28 @@ export default {
         this.register.notice = "密码长度为6~16个字符";
         return;
       }
-      this.register.isError = false;
-      this.register.notice = "";
-      console.log(
-        `start register..., username: ${this.register.username} , password: ${this.register.password}`
-      );
+      Auth.register({
+        username: this.register.username,
+        password: this.register.password,
+      })
+        .then((data) => {
+          this.register.isError = false;
+          this.register.notice = "";
+          this.$router.push({ path: "botebooks" });
+          console.log(data);
+        })
+        .catch((data) => {
+          this.register.isError = true;
+          this.register.notice = data.msg;
+        });
+      // request("/auth/register", "POST", {
+      //   username: this.login.username,
+      //   password: this.login.password,
+      // }).then((data) => console.log(data));
     },
+    //注册End
 
+    //登录Start
     onLogin() {
       if (!/^[\w\u4e00-\u9fa5]{3,15}$/.test(this.login.username)) {
         this.login.isError = true;
@@ -122,7 +149,29 @@ export default {
       console.log(
         `start login..., username: ${this.login.username} , password: ${this.login.password}`
       );
+
+      Auth.login({
+        username: this.login.username,
+        password: this.login.password,
+      })
+        .then((data) => {
+          this.login.isError = false;
+          this.login.notice = "";
+          this.$router.push({ path: "notebooks" });
+          console.log("$router.push");
+        })
+        .catch((data) => {
+          console.log(data);
+          this.login.isError = true;
+          this.login.notice = data.msg;
+        });
+
+      // request("/auth/login", "POST", {
+      //   username: this.login.username,
+      //   password: this.login.password,
+      // }).then((data) => console.log(data))
     },
+    //登录End
   },
 };
 </script>
@@ -198,7 +247,7 @@ export default {
       border-top: 1px solid #eee;
       height: 0;
       overflow: hidden;
-      transition: height 0.4s;
+      transition: height 1s;
 
       &.show {
         height: 193px;
