@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import login from '@/components/login'
 
+import login from '@/components/login'
 import NotebooksList from '@/components/NotebooksList'
 import NoteDetail from '@/components/NoteDetail'
 import TrashDetail from '@/components/TrashDetail'
@@ -12,7 +12,7 @@ export default new Router({
   routes: [
     {
       path: '/',
-      // redirect: '/login'
+      redirect: '/login'
     },
     {
       path: '/login',

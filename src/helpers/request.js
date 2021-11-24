@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-console.log('1')
+// console.log('1')
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencode'
 axios.defaults.baseURL = 'https://note-server.hunger-valley.com'
 
@@ -34,6 +34,5 @@ export default function request(url, type = 'GET', data = {}) {
         })
     })
 }
-
 
 

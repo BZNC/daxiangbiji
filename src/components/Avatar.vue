@@ -1,18 +1,38 @@
 <template>
-  <span :title="user.username">{{slug}}</span>
+  <span :title="username">{{ slug }}</span>
 </template>
 
 <script>
-  export default {
-    data() {
-      return {
-        user: {
-          username: 'Valley'
-        },
-        slug: 'V'
+import Auth from "@/apis/auth.js";
+import request from "@/helpers/request.js";
+
+export default {
+  data() {
+    return {
+      username: "未登录",
+    };
+  },
+
+  created() {
+    //    request("/auth").then((res) => {
+    //      console.log(res);
+    //  });
+
+    Auth.getInfo().then((res) => {
+      // console.log(res);
+      if (res.isLogin) {
+        this.username = res.data.username;
+        console.log(this.username);
       }
-    }
-  }
+    });
+  },
+
+  computed: {
+    slug() {
+      return this.username.charAt(0);
+    },
+  },
+};
 </script>
 
 <style scoped>

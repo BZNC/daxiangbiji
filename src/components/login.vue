@@ -61,9 +61,9 @@
 
 import Auth from "@/apis/auth";
 
-Auth.getInfo().then((data) => {
-  console.log(data);
-});
+// Auth.getInfo().then((data) => {
+//   console.log(data);
+// });
 
 export default {
   data() {
