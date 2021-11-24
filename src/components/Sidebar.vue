@@ -24,8 +24,8 @@
 
 <script>
 import avatar from "@/components/Avatar.vue";
-
 import Auth from "@/apis/auth";
+import Bus from "@/helpers/bus";
 
 export default {
   components: {
@@ -34,6 +34,7 @@ export default {
   methods: {
     logout() {
       Auth.logout().then((data) => {
+        Bus.$emit("userNameUpdate", { username: "未登录" });
         this.$router.push({ path: "login" });
       });
     },

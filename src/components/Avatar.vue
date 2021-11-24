@@ -4,7 +4,8 @@
 
 <script>
 import Auth from "@/apis/auth.js";
-import request from "@/helpers/request.js";
+// import request from "@/helpers/request.js";
+import Bus from "@/helpers/bus";
 
 export default {
   data() {
@@ -14,9 +15,9 @@ export default {
   },
 
   created() {
-    //    request("/auth").then((res) => {
-    //      console.log(res);
-    //  });
+    Bus.$on("userNameUpdate", (user) => {
+      this.username = user.username;
+    });
 
     Auth.getInfo().then((res) => {
       // console.log(res);

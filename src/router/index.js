@@ -22,7 +22,7 @@ export default new Router({
     {
       path: '/notebooks',
       name: 'notebooks',
-      component: NotebooksList.vue
+      component: NotebooksList
     },
     {
       path: '/note/:noteId',
@@ -32,7 +32,7 @@ export default new Router({
     {
       path: '/trash/:noteId',
       name: 'trash',
-      component: TrashDetail.vue
+      component: TrashDetail
     }
   ]
 })

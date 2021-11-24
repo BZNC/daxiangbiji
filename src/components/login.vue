@@ -60,6 +60,7 @@
 // request("/auth").then((data) => console.log(data));
 
 import Auth from "@/apis/auth";
+import Bus from "@/helpers/bus";
 
 // Auth.getInfo().then((data) => {
 //   console.log(data);
@@ -117,6 +118,7 @@ export default {
         .then((data) => {
           this.register.isError = false;
           this.register.notice = "";
+          Bus.$emit("userNameUpdate", { username: this.register.username });
           this.$router.push({ path: "botebooks" });
           console.log(data);
         })
@@ -157,6 +159,7 @@ export default {
         .then((data) => {
           this.login.isError = false;
           this.login.notice = "";
+          Bus.$emit("userNameUpdate", { username: this.login.username });
           this.$router.push({ path: "notebooks" });
           console.log("$router.push");
         })
