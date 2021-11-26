@@ -75,14 +75,14 @@ export default {
         username: "",
         password: "",
         notice: "输入用户名和密码",
-        isError: false,
+        isError: false
       },
       register: {
         username: "",
         password: "",
         notice: "创建账号后，请记住用户名和密码",
-        isError: false,
-      },
+        isError: false
+      }
     };
   },
 
@@ -113,16 +113,16 @@ export default {
       }
       Auth.register({
         username: this.register.username,
-        password: this.register.password,
+        password: this.register.password
       })
-        .then((data) => {
+        .then(data => {
           this.register.isError = false;
           this.register.notice = "";
           Bus.$emit("userNameUpdate", { username: this.register.username });
           this.$router.push({ path: "botebooks" });
           console.log(data);
         })
-        .catch((data) => {
+        .catch(data => {
           this.register.isError = true;
           this.register.notice = data.msg;
         });
@@ -154,16 +154,16 @@ export default {
 
       Auth.login({
         username: this.login.username,
-        password: this.login.password,
+        password: this.login.password
       })
-        .then((data) => {
+        .then(data => {
           this.login.isError = false;
           this.login.notice = "";
           Bus.$emit("userNameUpdate", { username: this.login.username });
           this.$router.push({ path: "notebooks" });
           console.log("$router.push");
         })
-        .catch((data) => {
+        .catch(data => {
           console.log(data);
           this.login.isError = true;
           this.login.notice = data.msg;
@@ -173,9 +173,9 @@ export default {
       //   username: this.login.username,
       //   password: this.login.password,
       // }).then((data) => console.log(data))
-    },
+    }
     //登录End
-  },
+  }
 };
 </script>
 

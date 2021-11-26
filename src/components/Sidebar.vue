@@ -61,17 +61,18 @@ export default {
     .router-link-active {
       background-color: #5e6266;
     }
-
-    // .logout {
-    //   position: absolute;
-    //   bottom: 20px;
-    //   width: 100%;
-    //   text-align: center;
-    //   cursor: pointer;
-    // }
   }
+
   .iconfont {
     color: #fff;
+  }
+
+  .logout {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    text-align: center;
+    cursor: pointer;
   }
 }
 </style>
