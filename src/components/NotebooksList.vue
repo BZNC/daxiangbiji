@@ -69,6 +69,16 @@ export default {
       });
     },
 
+    onEdit(notebook) {
+      console.log("edit...", notebook);
+      let title = window.prompt("修改标题", notebook.title);
+      Notebooks.updateNotebook(notebook.id, { title }).then(res => {
+        console.log(res);
+        notebook.title = title;
+        alert(res.msg);
+      });
+    },
+
     onDelete(notebook) {
       console.log("delete", notebook);
       let isConfirm = window.confirm("你确定要删除吗?");
