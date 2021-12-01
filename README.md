@@ -1,21 +1,49 @@
-# vue-evernote-client
+# 项目简介
 
-> A Vue.js project
+大象笔记是一个使用Vue开的笔记应用。可以方便地在网页上记录自己的私人笔记，支持分记录本联网查看。
 
-## Build Setup
+# 使用方法
 
-``` bash
-# install dependencies
-npm install
+1. 先注册账号，请牢记账号密码，暂不支持找回功能。
 
-# serve with hot reload at localhost:8080
-npm run dev
+![创建账号](http://cloud.hunger-valley.com/18-1-10/88104731.jpg-middle)
 
-# build for production with minification
-npm run build
+2. 点击左侧导航栏，点击笔记本功能，查看所有笔记本列表。选取其中一个笔记本，可以跳转到这一笔记本的详情页。
+3. 点击导航栏笔记页，可以查看当前笔记本中的笔记。
+4. 点击退出图标，可以退出账号。
 
-# build for production and view the bundle analyzer report
-npm run build --report
-```
+# 项目开发特色
 
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+前后端分离，这个项目中做的是前端相关的代码。
+
+使用Vue构建单页面应用程序，简洁流畅。
+
+less开发样式，
+
+并引入ElementUI美化页面。
+
+支持注册新用户登录等功能，可以在网页上联网查看个人笔记，非本地版。
+
+组件化开发项目，
+
+左侧sidebar组件可以导航到笔记、笔记本、回收站等组件，
+
+使用Vue的Router功能实现跳转，
+
+头像组件会取用户名第一个字符进行显示。
+
+封装了常用的方法，
+
+如注册与登录页相关的注册、登录、注销、查询登录状态等方法，笔记本列表页相关的增删改查等方法，
+
+这些方法会作为API，实现代码的复用并减少冗余。
+
+
+
+# 已知BUG
+
+1.笔记本列表页无法正常显示笔记本创建时间，正在尝试解决。
+
+# 关键词
+
+Vue.js , ElementUI , ES6语法 , axios，promise , 
