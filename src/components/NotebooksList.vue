@@ -12,7 +12,7 @@
         <div class="book-list">
           <router-link
             v-for="notebook in notebooks"
-            to="/note/1"
+            :to="`/note?notebookId=${notebook.id}`"
             class="notebook"
             :key="notebook.id"
           >
@@ -22,7 +22,7 @@
               <span>{{ notebook.noteCounts }}</span>
               <span class="action" @click.stop.prevent="onEdit(notebook)">编辑</span>
               <span class="action" @click.stop.prevent="onDelete(notebook)">删除</span>
-              <!-- <span class="date">{{ notebook.friendlyCreatedAt }}</span> -->
+              <span class="date">{{notebook.friendlyCreatedAt}}</span>
             </div>
           </router-link>
         </div>
@@ -33,6 +33,7 @@
 <script>
 import Auth from "@/apis/auth.js";
 import Notebook from "@/apis/notebook";
+import { friendlyDate } from "@/helpers/utils";
 
 // window.Notebook = Notebook;
 
@@ -57,38 +58,53 @@ export default {
 
   methods: {
     onCreate() {
-      let title = window.prompt("创建笔记本");
-      if (title.trim() === "") {
-        alert("笔记本名不能为空");
-        return;
-      }
-      Notebook.addNotebook({ title }).then(res => {
-        console.log(res);
-        this.notebooks.unshift(res.data);
-        alert(res.msg);
-      });
+      this.$prompt("输入新笔记本标题", "创建笔记本", {
+        confirmButtonText: "确定",
+        cancleButtonText: "取消",
+        inputPattern: /^.{1,30}$/,
+        inputErrorMessage: "标题不可为空，且不超过30个字符"
+      })
+        .then(({ value }) => {
+          return Notebook.addNotebook({ title: value });
+        })
+        .then(res => {
+          res.data.friendlyCreatedAt = friendlyDate(res.data.createdAt);
+          this.notebooks.unshift(res.data);
+          this.$message.success(res.msg);
+        });
     },
 
     onEdit(notebook) {
-      console.log("edit...", notebook);
-      let title = window.prompt("修改标题", notebook.title);
-      Notebooks.updateNotebook(notebook.id, { title }).then(res => {
-        console.log(res);
-        notebook.title = title;
-        alert(res.msg);
-      });
+      let title = "";
+      this.$prompt("输入新笔记标题", "修改笔记本", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        inputPattern: /^.{1,30}/,
+        inputValue: noteBook.title,
+        inputErrorMessage: "标题不能为空，且不超过30个字符"
+      })
+        .then(({ value }) => {
+          title = value;
+          return Notebook.updateNotebook(notebook.id, { title });
+        })
+        .then(res => {
+          notebook.title = title;
+        });
     },
 
     onDelete(notebook) {
-      console.log("delete", notebook);
-      let isConfirm = window.confirm("你确定要删除吗?");
-      if (isConfirm) {
-        Notebook.deleteNotebook(notebook.id).then(res => {
-          console.log(res);
+      this.$confirm("确认要删除笔记本吗", "删除笔记本", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          return Notebook.deleteNotebook(notebook.id);
+        })
+        .then(res => {
           this.notebooks.splice(this.notebooks.indexOf(notebook), 1);
-          alert(res.msg);
+          this.$message.success(res.msg);
         });
-      }
     }
   }
 };

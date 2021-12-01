@@ -3,7 +3,7 @@
     <avatar></avatar>
 
     <div class="icons">
-      <router-link to="/note/1" title="笔记">
+      <router-link to="/note" title="笔记">
         <i class="iconfont icon-note"></i>
       </router-link>
 
@@ -11,7 +11,7 @@
         <i class="iconfont icon-notebook"></i>
       </router-link>
 
-      <router-link to="/trash/2" title="回收站">
+      <router-link to="/trash" title="回收站">
         <i class="iconfont icon-trash"></i>
       </router-link>
     </div>
@@ -29,16 +29,16 @@ import Bus from "@/helpers/bus";
 
 export default {
   components: {
-    avatar,
+    avatar
   },
   methods: {
     logout() {
-      Auth.logout().then((data) => {
+      Auth.logout().then(data => {
         Bus.$emit("userNameUpdate", { username: "未登录" });
         this.$router.push({ path: "login" });
       });
-    },
-  },
+    }
+  }
 };
 </script>
 

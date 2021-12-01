@@ -16,22 +16,22 @@ export default new Router({
     },
     {
       path: '/login',
-      name: 'login',
+      // name: 'login',
       component: login
     },
     {
       path: '/notebooks',
-      name: 'notebooks',
+      // name: 'notebooks',
       component: NotebooksList
     },
     {
-      path: '/note/:noteId',
-      name: 'noteID',
+      path: '/note',
+      // name: 'noteID',
       component: NoteDetail
     },
     {
-      path: '/trash/:noteId',
-      name: 'trash',
+      path: '/trash',
+      // name: 'trash',
       component: TrashDetail
     }
   ]

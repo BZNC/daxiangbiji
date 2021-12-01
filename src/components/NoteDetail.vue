@@ -1,18 +1,19 @@
 <template>
   <div>
-    <!--{{router.params.noteId}}-->
-    {{ $route.params.noteId }}
+    <h1>noteBookId:{{$route.query.notebookId}}</h1>
+    <h1>noteId :{{ $route.query.noteId }}</h1>
+    <!--   -->
   </div>
 </template>
 
 <script>
 export default {
-  name: "Login",
+  name: "NoteDetail",
   data() {
     return {
-      msg: "笔记详情页",
+      msg: "笔记详情页"
     };
-  },
+  }
 };
 </script>
 
