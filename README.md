@@ -46,4 +46,4 @@ less开发样式，
 
 # 关键词
 
-Vue.js , ElementUI , ES6语法 , axios，promise , 
+Vue.js , ElementUI , ES6语法 , axios , promise , Vue-router , 编程式导航

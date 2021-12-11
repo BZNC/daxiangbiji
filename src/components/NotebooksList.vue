@@ -33,7 +33,7 @@
 <script>
 import Auth from "@/apis/auth.js";
 import Notebook from "@/apis/notebook";
-import { friendlyDate } from "@/helpers/utils";
+import { friendlyDate } from "@/helpers/util";
 
 // window.Notebook = Notebook;
 
