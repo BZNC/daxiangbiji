@@ -41,7 +41,18 @@ export default {
 
     //   ADD: '/notes/to/:notebookId',
     addNote({ notebookId }, { title = '', content = '' } = { title: '', content: '' }) {
-        return request(URL.ADD.replace(':notebookId', notebookId), 'POST', { title, content })
+        // return request(URL.ADD.replace(':notebookId', notebookId), 'POST', { title, content })
+        return new Promise((resolve, reject) => {
+            request(URL.ADD.replace(':notebookId', notebookId), 'POST', { title, content })
+                .then(res => {
+                    res.data.createdAtFriendly = friendlyDate(res.data.createdAt)
+                    res.data.updatedAtFriendly = friendlyDate(res.data.updatedAt)
+                    resolve(res)
+                }).catch(err => {
+                    reject(err)
+                })
+        })
+
     }
     // Notes.addNote({notebookId:38},{title:'a',content:'b'}).then(res=>{console.log(res)})
 }

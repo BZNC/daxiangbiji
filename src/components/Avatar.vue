@@ -10,20 +10,20 @@ import Bus from "@/helpers/bus";
 export default {
   data() {
     return {
-      username: "未登录",
+      username: "未登录"
     };
   },
 
   created() {
-    Bus.$on("userNameUpdate", (user) => {
+    Bus.$on("userNameUpdate", user => {
       this.username = user.username;
     });
 
-    Auth.getInfo().then((res) => {
+    Auth.getInfo().then(res => {
       // console.log(res);
       if (res.isLogin) {
         this.username = res.data.username;
-        console.log(this.username);
+        // console.log(this.username);
       }
     });
   },
@@ -31,8 +31,8 @@ export default {
   computed: {
     slug() {
       return this.username.charAt(0);
-    },
-  },
+    }
+  }
 };
 </script>
 

@@ -1,9 +1,43 @@
 <template>
   <div id="note" class="detail">
-    <note-sidebar></note-sidebar>
+    <note-sidebar @update:notes="val => notes = val"></note-sidebar>
+
     <div class="note-detail">
-      <h1>noteBookId:{{$route.query.notebookId}}</h1>
-      <h1>noteId :{{ $route.query.noteId }}</h1>
+      <div class="note-empty" v-show="!curNote.id">请选择笔记</div>
+      <div class="note-detail-ct" v-show="curNote.id">
+        <div class="note-bar">
+          <span>创建日期:{{curNote.createdAtFriendly}}</span>
+          <span>更新日期:{{curNote.updatedAtFriendly}}</span>
+          <span>{{statusText}}</span>
+          <span class="iconfont icon-delete" @click="deleteNote"></span>
+          <span class="iconfont icon-fullscreen" @click="isShowPreview = !isShowPreview"></span>
+        </div>
+
+        <!-- note-title -->
+        <div class="note-title">
+          <input
+            type="text"
+            v-model:value="curNote.title"
+            @input="updateNote"
+            @keydown="statusText='正在输入...'"
+            placeholder="input title"
+          />
+        </div>
+
+        <hr />
+        <!-- note-content -->
+        <div class="editor">
+          <textarea
+            v-show="!isShowPreview"
+            v-model:value="curNote.content"
+            @input="updateNote"
+            @keydown="statusText='正在输入...'"
+            placeholder="输入内容，支持markdown语法"
+          ></textarea>
+
+          <div class="preview markdown-body" v-html="previewContent" v-show="isShowPreview"></div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -11,16 +45,82 @@
 <script>
 import Auth from "@/apis/auth.js";
 import NoteSidebar from "@/components/NoteSidebar.vue";
+import Bus from "@/helpers/bus";
+import _ from "lodash"; // debounce函数
+import Notes from "@/apis/notes";
+import MarkdownIt from "markdown-it";
+
+let md = new MarkdownIt();
 
 export default {
   name: "NoteDetail",
-  data() {
-    return {
-      msg: "笔记详情页"
-    };
-  },
+
   components: {
     NoteSidebar
+  },
+
+  data() {
+    return {
+      // 当前笔记 随着RouteUpdate的更新而更新
+      curNote: {},
+      // 当前笔记本中的全部笔记
+      notes: [],
+      statusText: "未改动",
+      isShowPreview: false
+    };
+  },
+
+  created() {
+    Auth.getInfo().then(res => {
+      if (!res.isLogin) {
+        this.$router.push({ path: "/login" });
+      }
+    });
+
+    Bus.$once("update:notes", val => {
+      this.curNote =
+        val.find(note => note.id == this.$route.query.noteId) || {};
+    });
+  },
+
+  // 实时监听data中数据,
+  computed: {
+    previewContent() {
+      console.log(this.curNote.content || "");
+      return md.render(this.curNote.content || "");
+    }
+  },
+
+  methods: {
+    updateNote: _.debounce(function() {
+      Notes.updateNote(
+        { noteId: this.curNote.id },
+        { title: this.curNote.title, content: this.curNote.content }
+      )
+        .then(data => {
+          console.log(data);
+          this.statusText = "已保存";
+        })
+        .catch(data => {
+          console.log(data);
+          this.statusText = "保存出错";
+        });
+    }, 300),
+
+    deleteNote() {
+      Notes.deleteNote({ noteId: this.curNote.id }).then(data => {
+        this.$message.success(data.msg);
+        this.notes.splice(this.notes.indexOf(this.curNote), 1);
+        this.$router.replace({ path: "/note" });
+      });
+    }
+  },
+
+  // curNote的更新是随着RouteUpdate来的
+  beforeRouteUpdate(to, from, next) {
+    console.log("beforeRouteUpdate");
+    this.curNote = this.notes.find(note => note.id == to.query.noteId) || {};
+    next();
   }
 };
 </script>
@@ -34,8 +134,8 @@ export default {
 }
 
 .note-detail {
-  flex: 1;
   display: flex;
+  flex: 1;
   flex-direction: column;
 
   .note-detail-ct {
@@ -83,12 +183,13 @@ export default {
   }
 
   .editor {
-    height: ~"calc(100% - 70px)";
+    height: ~"calc(100% - 79px)";
     position: relative;
   }
   textarea,
   .preview {
     position: absolute;
+    left: 0;
     width: 100%;
     height: 100%;
     padding: 20px;

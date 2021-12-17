@@ -1,6 +1,6 @@
 <template>
   <div class="note-sidebar">
-    <span class="btn add-note">添加笔记</span>
+    <span class="btn add-note" @click="addNote">添加笔记</span>
 
     <el-dropdown class="notebook-title" @command="handleCommand" placement="bottom">
       <span class="el-dropdown-link">
@@ -16,12 +16,10 @@
         <el-dropdown-item command="trash">回收站</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
-
     <div class="menu">
       <div>更新时间</div>
       <div>标题</div>
     </div>
-
     <ul class="notes">
       <li v-for="note in notes" :key="note.id">
         <router-link :to="`/note?noteId=${note.id}&notebookId=${curBook.id}`">
@@ -34,42 +32,44 @@
 </template>
 
 <script>
-import Notebook from "@/apis/notebook";
+import Notebooks from "@/apis/notebook";
 import Notes from "@/apis/notes";
 import Bus from "@/helpers/bus";
 
-// window.Notes = Notes;
-
 export default {
   created() {
-    Notebook.getAll()
+    // 组件创建阶段即请求获取所有的notebook
+    // 存放在notebooks中
+    Notebooks.getAll()
       .then(res => {
         this.notebooks = res.data;
+        //设置一个表示当前被选中book的变量curBook
+        // 表现为展示在下拉菜单项目中
+        // 值为booklist列表组件跳转过来时点击的那个笔记本
+        // 获取办法为查询route的query值 或 为 默认第一个 或为 空
         this.curBook =
-          this.notebooks.find(notebook => notebook.id == this.$route.query) ||
+          this.notebooks.find(
+            notebook => notebook.id == this.$route.query.notebookId
+          ) ||
           this.notebooks[0] ||
           {};
+        // 根据bookID ，获取笔记本中的笔记列表，并将这一promis对象返回
         return Notes.getAll({ notebookId: this.curBook.id });
       })
+      // 将获取到的数据存入notes变量中
+      // 通过自定义事件的形式向父组件共享数据
       .then(res => {
         this.notes = res.data;
+        this.$emit("update:notes", this.notes);
+        Bus.$emit("update:notes", this.notes);
       });
-
-    //   return Notes.getAll({ notebookId: this.curBook.id });
-    // })
-    // .then(res => {
-    //   this.notes = res.data;
-    //   this.$emit("update:notes", this.notes);
-    //   Bus.$emit("update:notes", this.notes);
-    // });
   },
 
   data() {
     return {
       notebooks: [],
-      notes: [],
-      //存放当前笔记本的id标题等信息
-      curBook: {}
+      curBook: {},
+      notes: []
     };
   },
 
@@ -96,86 +96,8 @@ export default {
 </script>
 
 
-<style lang="less" scoped>
-.note-sidebar {
-  position: relative;
-  width: 290px;
-  border-right: 1px solid #ccc;
-  background-color: #eee;
-
-  .add-note {
-    position: absolute;
-    right: 5px;
-    top: 12px;
-    color: #666;
-    font-size: 12px;
-    padding: 2px 4px;
-    box-shadow: 0px 0px 2px 0px #ccc;
-    border: none;
-    z-index: 1;
-  }
-
-  .notebook-title {
-    font-size: 18px;
-    font-weight: normal;
-    color: #333;
-    height: 45px;
-    line-height: 45px;
-    text-align: center;
-    border-bottom: 1px solid #ccc;
-    background-color: #f7f7f7;
-    display: block;
-  }
-  .el-dropdown-link {
-    cursor: pointer;
-  }
-  .el-dropdown-menu__item {
-    width: 200px;
-  }
-
-  .menu {
-    display: flex;
-
-    div {
-      font-size: 12px;
-      padding: 2px 10px;
-      flex: 1;
-      border-right: 1px solid #ccc;
-      border-bottom: 1px solid #ccc;
-
-      &:last-child {
-        border-right: none;
-      }
-    }
-
-    .iconfont {
-      font-size: 10px;
-    }
-  }
-
-  .notes {
-    li {
-      &:nth-child(odd) {
-        background-color: #f2f2f2;
-      }
-
-      a {
-        display: flex;
-        padding: 3px 0;
-        font-size: 12px;
-        border: 2px solid transparent;
-      }
-
-      .router-link-exact-active {
-        border: 2px solid #81c0f3;
-        border-radius: 3px;
-      }
-
-      span {
-        padding: 0 10px;
-        flex: 1;
-      }
-    }
-  }
-}
+<style lang="less" >
+@import url(../assets/css/note-sidebar.less);
 </style>
+
+

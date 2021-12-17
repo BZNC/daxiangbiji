@@ -5,7 +5,7 @@ export function friendlyDate(datsStr) {
     let space = now - time
     let str = ''
 
-    console.log('1')
+    // console.log('1')
     switch (true) {
         //一分钟内显示刚刚
         case space < 60000:
@@ -23,4 +23,4 @@ export function friendlyDate(datsStr) {
             str = Math.floor(space / (1000 * 3600 * 24)) + '天前'
     }
     return str
-}
+} 
