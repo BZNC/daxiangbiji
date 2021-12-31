@@ -36,7 +36,7 @@ body {
   font-size: 14px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
+  /* text-align: center; */
   color: #2c3e50;
   -moz-osx-font-smoothing: grayscale;
   background-color: #eee;

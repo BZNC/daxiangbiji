@@ -1,7 +1,7 @@
-import request from "../helpers/request";
+import request from "@/helpers/request";
 
 const URL = {
-    REGISTER: '/auth/regiter',
+    REGISTER: '/auth/register',
     LOGIN: '/auth/login',
     LOGOUT: '/auth/logout',
     GET_INFO: '/auth'

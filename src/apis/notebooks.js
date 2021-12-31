@@ -15,11 +15,11 @@ export default {
                 .then(res => {
                     res.data = res.data.sort((notebook1, notebook2) => notebook1.createdAt < notebook2.createdAt)
                     res.data.forEach(notebook => {
-                        notebook.friendlyCreatedAt = friendlyDate(notebook.createdAt)
+                        notebook.createdAtFriendly = friendlyDate(notebook.createdAt)
+                        notebook.updatedAtFriendly = friendlyDate(notebook.updatedAt)
                     });
                     resolve(res)
-                })
-                .catch(err => {
+                }).catch(err => {
                     reject(err)
                 })
         })
@@ -34,7 +34,15 @@ export default {
     },
 
     addNotebook({ title = '' } = { title: '' }) {
-        return request(URL.ADD, 'POST', { title })
+        return new Promise((resolve, reject) => {
+            request(URL.ADD, 'POST', { title })
+                .then(res => {
+                    res.data.CreatedAtfriendly = friendlyDate(res.data.createdAt)
+                    res.data.updatedAtfriendly = friendlyDate(res.data.updatedAt)
+                    resolve(res)
+                }).catch(err => {
+                    reject(err)
+                })
+        })
     }
-
 }

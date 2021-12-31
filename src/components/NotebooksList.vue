@@ -22,7 +22,7 @@
               <span>{{ notebook.noteCounts }}</span>
               <span class="action" @click.stop.prevent="onEdit(notebook)">编辑</span>
               <span class="action" @click.stop.prevent="onDelete(notebook)">删除</span>
-              <span class="date">{{notebook.friendlyCreatedAt}}</span>
+              <span class="date">{{notebook.createdAtFriendly}}</span>
             </div>
           </router-link>
         </div>
@@ -31,65 +31,55 @@
   </div>
 </template>
 <script>
-import Auth from "@/apis/auth.js";
-import Notebook from "@/apis/notebook";
-import { friendlyDate } from "@/helpers/util";
+import { mapActions, mapGetters } from "vuex";
 
-// window.Notebook = Notebook;
+// window.Notebooks11 = Notebook;
 
 export default {
   data() {
-    return {
-      notebooks: []
-    };
+    return {};
   },
 
   created() {
-    Auth.getInfo().then(res => {
-      if (!res.isLogin) {
-        this.$router.push({ path: "/login" });
-      }
-    });
+    this.checkLogin();
+    this.getNotebooks();
+  },
 
-    Notebook.getAll().then(res => {
-      this.notebooks = res.data;
-    });
+  computed: {
+    ...mapGetters(["notebooks"])
   },
 
   methods: {
+    ...mapActions([
+      "getNotebooks",
+      "addNotebook",
+      "updateNotebook",
+      "deleteNotebook",
+      "checkLogin"
+    ]),
+
     onCreate() {
       this.$prompt("输入新笔记本标题", "创建笔记本", {
         confirmButtonText: "确定",
         cancleButtonText: "取消",
         inputPattern: /^.{1,30}$/,
         inputErrorMessage: "标题不可为空，且不超过30个字符"
-      })
-        .then(({ value }) => {
-          return Notebook.addNotebook({ title: value });
-        })
-        .then(res => {
-          res.data.friendlyCreatedAt = friendlyDate(res.data.createdAt);
-          this.notebooks.unshift(res.data);
-          this.$message.success(res.msg);
-        });
+      }).then(({ value }) => {
+        this.addNotebook({ title: value });
+      });
     },
 
     onEdit(notebook) {
-      let title = "";
+      // let title = "";
       this.$prompt("输入新笔记标题", "修改笔记本", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        inputPattern: /^.{1,30}/,
-        inputValue: noteBook.title,
+        inputPattern: /^.{1,30}$/,
+        inputValue: notebook.title,
         inputErrorMessage: "标题不能为空，且不超过30个字符"
-      })
-        .then(({ value }) => {
-          title = value;
-          return Notebook.updateNotebook(notebook.id, { title });
-        })
-        .then(res => {
-          notebook.title = title;
-        });
+      }).then(({ value }) => {
+        this.updateNotebook({ notebookId: notebook.id, title: value });
+      });
     },
 
     onDelete(notebook) {
@@ -97,14 +87,9 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-      })
-        .then(() => {
-          return Notebook.deleteNotebook(notebook.id);
-        })
-        .then(res => {
-          this.notebooks.splice(this.notebooks.indexOf(notebook), 1);
-          this.$message.success(res.msg);
-        });
+      }).then(() => {
+        this.deleteNotebook({ notebookId: notebook.id });
+      });
     }
   }
 };

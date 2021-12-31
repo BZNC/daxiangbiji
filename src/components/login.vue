@@ -9,20 +9,14 @@
 
             <transition name="slide">
               <div v-bind:class="{ show: isShowRegister }" class="register">
-                <input
-                  type="text"
-                  v-model="register.username"
-                  placeholder="用户名"
-                />
+                <input type="text" v-model="register.username" placeholder="用户名" />
                 <input
                   type="password"
                   v-model="register.password"
                   @keyup.enter="onRegister"
                   placeholder="密码"
                 />
-                <p v-bind:class="{ error: register.isError }">
-                  {{ register.notice }}
-                </p>
+                <p v-bind:class="{ error: register.isError }">{{ register.notice }}</p>
                 <div class="button" @click="onRegister">创建账号</div>
               </div>
             </transition>
@@ -31,20 +25,14 @@
 
             <transition name="slide">
               <div v-bind:class="{ show: isShowLogin }" class="login">
-                <input
-                  type="text"
-                  v-model="login.username"
-                  placeholder="输入用户名"
-                />
+                <input type="text" v-model="login.username" placeholder="输入用户名" />
                 <input
                   type="password"
                   v-model="login.password"
                   @keyup.enter="onLogin"
                   placeholder="密码"
                 />
-                <p v-bind:class="{ error: login.isError }">
-                  {{ login.notice }}
-                </p>
+                <p v-bind:class="{ error: login.isError }">{{ login.notice }}</p>
                 <div class="button" @click="onLogin">登录</div>
               </div>
             </transition>
@@ -56,15 +44,7 @@
 </template>
 
 <script>
-// import request from "@/helpers/request.js";
-// request("/auth").then((data) => console.log(data));
-
-import Auth from "@/apis/auth";
-import Bus from "@/helpers/bus";
-
-// Auth.getInfo().then((data) => {
-//   console.log(data);
-// });
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   data() {
@@ -87,6 +67,11 @@ export default {
   },
 
   methods: {
+    ...mapActions({
+      loginUser: "login",
+      registerUser: "register"
+    }),
+
     //切换登录与创建账户窗口Start
     showLogin() {
       this.isShowLogin = true;
@@ -111,25 +96,20 @@ export default {
         this.register.notice = "密码长度为6~16个字符";
         return;
       }
-      Auth.register({
+
+      this.registerUser({
         username: this.register.username,
         password: this.register.password
       })
         .then(data => {
           this.register.isError = false;
           this.register.notice = "";
-          Bus.$emit("userNameUpdate", { username: this.register.username });
-          this.$router.push({ path: "botebooks" });
-          console.log(data);
+          this.$router.push({ path: "notebooks" });
         })
         .catch(data => {
           this.register.isError = true;
           this.register.notice = data.msg;
         });
-      // request("/auth/register", "POST", {
-      //   username: this.login.username,
-      //   password: this.login.password,
-      // }).then((data) => console.log(data));
     },
     //注册End
 
@@ -145,34 +125,20 @@ export default {
         this.login.notice = "密码长度为6~16个字符";
         return;
       }
-      this.login.isError = false;
-      this.login.notice = "";
 
-      console.log(
-        `start login..., username: ${this.login.username} , password: ${this.login.password}`
-      );
-
-      Auth.login({
+      this.loginUser({
         username: this.login.username,
         password: this.login.password
       })
-        .then(data => {
+        .then(() => {
           this.login.isError = false;
           this.login.notice = "";
-          Bus.$emit("userNameUpdate", { username: this.login.username });
           this.$router.push({ path: "notebooks" });
-          console.log("$router.push");
         })
         .catch(data => {
-          console.log(data);
           this.login.isError = true;
           this.login.notice = data.msg;
         });
-
-      // request("/auth/login", "POST", {
-      //   username: this.login.username,
-      //   password: this.login.password,
-      // }).then((data) => console.log(data))
     }
     //登录End
   }

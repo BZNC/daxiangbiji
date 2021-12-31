@@ -1,6 +1,6 @@
 <template>
   <div class="note-sidebar">
-    <span class="btn add-note" @click="addNote">添加笔记</span>
+    <span class="btn add-note" @click="onAddNote">添加笔记</span>
 
     <el-dropdown class="notebook-title" @command="handleCommand" placement="bottom">
       <span class="el-dropdown-link">
@@ -32,72 +32,66 @@
 </template>
 
 <script>
-import Notebooks from "@/apis/notebook";
-import Notes from "@/apis/notes";
-import Bus from "@/helpers/bus";
+import { mapState, mapGetters, mapMutations, mapActions } from "vuex";
 
 export default {
   created() {
-    // 组件创建阶段即请求获取所有的notebook
-    // 存放在notebooks中
-    Notebooks.getAll()
-      .then(res => {
-        this.notebooks = res.data;
-        //设置一个表示当前被选中book的变量curBook
-        // 表现为展示在下拉菜单项目中
-        // 值为booklist列表组件跳转过来时点击的那个笔记本
-        // 获取办法为查询route的query值 或 为 默认第一个 或为 空
-        this.curBook =
-          this.notebooks.find(
-            notebook => notebook.id == this.$route.query.notebookId
-          ) ||
-          this.notebooks[0] ||
-          {};
-        // 根据bookID ，获取笔记本中的笔记列表，并将这一promis对象返回
-        return Notes.getAll({ notebookId: this.curBook.id });
+    this.getNotebooks()
+      .then(() => {
+        //根据路由地址确定curBookId
+        this.setCurBookId({ curBookId: this.$route.query.notebookId });
+        //根据curBookId确定当前的notes
+        if (this.curBook.id) this.getNotes({ notebookId: this.curBook.id });
       })
-      // 将获取到的数据存入notes变量中
-      // 通过自定义事件的形式向父组件共享数据
-      .then(res => {
-        this.notes = res.data;
-        this.$emit("update:notes", this.notes);
-        Bus.$emit("update:notes", this.notes);
+      .then(() => {
+        this.setCurNoteId({ curNoteId: this.$route.query.noteId });
+        this.$router.replace({
+          path: "/note",
+          query: {
+            noteId: this.curNote.id,
+            notebookId: this.curBook.id
+          }
+        });
       });
   },
 
   data() {
-    return {
-      notebooks: [],
-      curBook: {},
-      notes: []
-    };
+    return {};
+  },
+
+  computed: {
+    ...mapGetters(["notebooks", "notes", "curBook", "curNote"])
   },
 
   methods: {
+    ...mapMutations(["setCurBookId", "setCurNoteId"]),
+
+    ...mapActions(["getNotebooks", "getNotes", "addNote"]),
+
     handleCommand(notebookId) {
       if (notebookId == "trash") {
         return this.$router.push({ path: "/trash" });
       }
-      this.curBook = this.notebooks.find(notebook => notebook.id == notebookId);
-      Notes.getAll({ notebookId }).then(res => {
-        this.notes = res.data;
-        this.$emit("update:notes", this.notes);
+      this.setCurBookId({ curBookId: notebookId });
+      this.getNotes({ notebookId: this.curBook.id }).then(() => {
+        this.setCurNote();
+        this.$router.replace({
+          path: "/note",
+          query: {
+            noteId: this.curNote.id,
+            notebookId: this.curBook.id
+          }
+        });
       });
     },
 
-    addNote() {
-      Notes.addNote({ notebookId: this.curBook.id }).then(res => {
-        console.log(res);
-        this.notes.unshift(res.data);
-      });
+    onAddNote() {
+      this.addNote({ notebookId: this.curBook.id });
     }
   }
 };
 </script>
 
-
 <style lang="less" >
 @import url(../assets/css/note-sidebar.less);
 </style>
-
-
