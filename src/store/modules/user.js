@@ -23,7 +23,6 @@ const actions = {
     login({ commit }, { username, password }) {
         return Auth.login({ username, password })
             .then(res => {
-                console.log(res)
                 commit('setUser', { user: res.data })
             })
     },
@@ -47,7 +46,6 @@ const actions = {
         return Auth.getInfo()
             .then(res => {
                 if (!res.isLogin) {
-                    console.log('jump')
                     router.push(payload.path).catch(err => {
                         console.log('routerINFO')
                     })
