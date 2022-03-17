@@ -74,7 +74,7 @@ export default {
       }
       this.setCurBookId({ curBookId: notebookId });
       this.getNotes({ notebookId: this.curBook.id }).then(() => {
-        this.setCurNoteId();
+        this.setCurNoteId({});
         this.$router.replace({
           path: "/note",
           query: {

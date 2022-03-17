@@ -58,11 +58,6 @@ export default {
     this.getNotebooks();
     this.getTrashNotes().then(() => {
       this.setCurTrashNoteId({ curTrashNoteId: this.$route.query.noteId });
-      // this.$router.replace({
-      //   path: "/trash",
-      //   query: { noteId: this.curTrashNote.id }
-      // })
-
       this.$router.replace({
         path: "/trash",
         query: { noteId: this.curTrashNote.id }
@@ -92,6 +87,7 @@ export default {
         type: "warning"
       }).then(() => {
         this.deleteTrashNote({ noteId: this.curTrashNote.id }).then(() => {
+          this.setCurTrashNoteId();
           this.$router.replace({
             path: "/trash",
             query: { noteId: this.curTrashNote.id }
@@ -103,6 +99,10 @@ export default {
     onRevert() {
       this.revertTrashNote({ noteId: this.curTrashNote.id }).then(() => {
         this.setCurTrashNoteId();
+        this.$router.replace({
+          path: "/trash",
+          query: { noteId: this.curTrashNote.id }
+        });
       });
     }
   },

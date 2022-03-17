@@ -42,7 +42,7 @@ const actions = {
     },
 
     checkLogin({ commit, state }, payload = { path: "/login" }) {
-        if (state.user !== null) return
+        if (state.user !== null) return Promise.resolve()
         return Auth.getInfo()
             .then(res => {
                 if (!res.isLogin) {

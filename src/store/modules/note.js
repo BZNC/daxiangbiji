@@ -41,7 +41,7 @@ const mutations = {
     deleteNote(state, payload) {
         state.notes = state.notes.filter(note => note.id != payload.noteId)
     },
-
+    //payload 添加默认参数，如果没有参数则默认为空
     setCurNoteId(state, payload = {}) {
         state.curNoteId = payload.curNoteId
     }

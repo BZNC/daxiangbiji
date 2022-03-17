@@ -3,6 +3,8 @@ import { Message } from 'element-ui'
 
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencode'
 axios.defaults.baseURL = '//note-server.hunger-valley.com'
+
+//允许跨域携带cookie信息
 axios.defaults.withCredentials = true
 
 

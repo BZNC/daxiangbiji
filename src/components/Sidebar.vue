@@ -17,26 +17,24 @@
     </div>
 
     <div class="logout">
-      <i class="iconfont icon-logout" @click="logout"></i>
+      <i class="iconfont icon-logout" @click="onlogout"></i>
     </div>
   </div>
 </template>
 
 <script>
 import avatar from "@/components/Avatar.vue";
-import Auth from "@/apis/auth";
-import Bus from "@/helpers/bus";
+import { mapActions } from "vuex";
 
 export default {
   components: {
     avatar
   },
   methods: {
-    logout() {
-      Auth.logout().then(data => {
-        Bus.$emit("userNameUpdate", { username: "未登录" });
-        this.$router.push({ path: "login" });
-      });
+    ...mapActions(["logout"]),
+
+    onlogout() {
+      this.logout({ path: "/login" });
     }
   }
 };

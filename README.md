@@ -48,13 +48,15 @@ less开发样式，
 
 # 已知BUG
 
-~~1.笔记本列表页无法正常显示笔记本创建时间，正在尝试解决。~~
+~~1.笔记本列表页无法正常显示笔记本创建时间。~~
 
 ​	已解决，解决办法：
 
 ​	列表页缺少处理事件方法，添加即可。
 
+2.element-ui的message图标不能正常显示
 
+3.回收站页面的恢复和删除功能报错 Uncaught TypeError: Cannot read properties of null (reading 'match')
 
 # 关键词
 

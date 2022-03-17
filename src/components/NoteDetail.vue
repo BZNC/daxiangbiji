@@ -13,6 +13,7 @@
           <span class="iconfont icon-delete" @click="ondeleteNote"></span>
           <span class="iconfont icon-fullscreen" @click="isShowPreview = !isShowPreview"></span>
         </div>
+        <!-- :class="isShowPreview?'icon-edit':''" -->
 
         <!-- note-title -->
         <div class="note-title">
@@ -114,85 +115,12 @@ export default {
 </script>
 
 <style lang="less" scoped>
+@import url(../assets/css/note-detail.less);
+
 #note {
   display: flex;
   align-items: stretch;
   background-color: #fff;
   flex: 1;
-}
-
-.note-detail {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-
-  .note-detail-ct {
-    height: 100%;
-  }
-
-  .note-empty {
-    font-size: 50px;
-    color: #ccc;
-    text-align: center;
-    margin-top: 100px;
-  }
-
-  .note-bar {
-    padding: 4px 20px;
-    border-bottom: 1px solid #eee;
-    &:after {
-      content: "";
-      display: block;
-      clear: both;
-    }
-    span {
-      font-size: 12px;
-      color: #999;
-      margin-right: 4px;
-    }
-    .iconfont {
-      float: right;
-      margin-left: 4px;
-      font-size: 18px;
-      cursor: pointer;
-    }
-  }
-
-  .note-title {
-    input,
-    span {
-      display: inline-block;
-      width: 100%;
-      border: none;
-      outline: none;
-      font-size: 18px;
-      padding: 10px 20px;
-    }
-  }
-
-  .editor {
-    height: ~"calc(100% - 79px)";
-    position: relative;
-  }
-  textarea,
-  .preview {
-    position: absolute;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    padding: 20px;
-  }
-
-  textarea {
-    border: none;
-    resize: none;
-    outline: none;
-    font-size: 14px;
-    font-family: "Monaco", courier, monospace;
-  }
-
-  code {
-    color: #f66;
-  }
 }
 </style>
